@@ -12,6 +12,7 @@ import yargs from 'yargs'
 import { spawn, execSync } from 'child_process'
 import lodash from 'lodash'
 import { yukiJadiBot } from './plugins/jadibot-serbot.js'
+import reminderScheduler from './plugins/reminder-scheduler.js'
 import chalk from 'chalk'
 import syntaxerror from 'syntax-error'
 import { tmpdir } from 'os'
@@ -86,6 +87,7 @@ stats: {},
 msgs: {},
 sticker: {},
 settings: {},
+reminders: [],
 ...(global.db.data || {}),
 }
 global.db.chain = chain(global.db.data)
@@ -298,6 +300,7 @@ if (connection === "open") {
 const userJid = jidNormalizedUser(conn.user.id)
 const userName = conn.user.name || conn.user.verifiedName || "Desconocido"
 await joinChannels(conn)
+reminderScheduler.run(conn)
 console.log(chalk.green.bold(`[ ✿ ]  Conectado a: ${userName}`))
 }
 let reason = new Boom(lastDisconnect?.error)?.output?.statusCode
